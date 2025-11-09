@@ -38,7 +38,12 @@ class ProjectBase(BaseModel):
 class ProjectCreate(ProjectBase):
     """Project creation model."""
 
-    pass
+    # Optional metadata fields for migration/import
+    created: Optional[date] = None
+    started: Optional[date] = None
+    last_reviewed: Optional[date] = None
+    completed: Optional[date] = None
+    descoped: Optional[date] = None
 
 
 class ProjectUpdate(BaseModel):

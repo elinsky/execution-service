@@ -79,7 +79,7 @@ class FileMigrator:
             return {}, content
 
         yaml_content = match.group(1)
-        markdown = match.group(2).strip()
+        markdown = match.group(2)  # Keep content exactly as-is
 
         # Parse YAML (simple key: value parser)
         metadata = {}
@@ -136,6 +136,11 @@ class FileMigrator:
                         type=ProjectType(metadata.get("type", "standard")),
                         content=markdown,
                         due=metadata.get("due") if isinstance(metadata.get("due"), date) else None,
+                        created=metadata.get("created") if isinstance(metadata.get("created"), date) else None,
+                        started=metadata.get("started") if isinstance(metadata.get("started"), date) else None,
+                        last_reviewed=metadata.get("last_reviewed") if isinstance(metadata.get("last_reviewed"), date) else None,
+                        completed=metadata.get("completed") if isinstance(metadata.get("completed"), date) else None,
+                        descoped=metadata.get("descoped") if isinstance(metadata.get("descoped"), date) else None,
                     )
 
                     await service.create_project(

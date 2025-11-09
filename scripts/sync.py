@@ -94,7 +94,7 @@ class FileSync:
             return {}, content
 
         yaml_content = match.group(1)
-        markdown = match.group(2).strip()
+        markdown = match.group(2)  # Keep content exactly as-is
 
         metadata = {}
         for line in yaml_content.split('\n'):
@@ -116,16 +116,36 @@ class FileSync:
         return metadata, markdown
 
     def create_yaml_frontmatter(self, metadata: dict, content: str) -> str:
-        """Create markdown file with YAML frontmatter."""
+        """Create markdown file with YAML frontmatter.
+
+        Uses canonical field order to ensure consistent output.
+        """
         lines = ["---"]
-        for key, value in metadata.items():
-            if value is not None:
+
+        # Canonical field order for consistency (matches normalized markdown files)
+        field_order = [
+            "area", "title", "type", "created", "started",
+            "last_reviewed", "due", "completed", "descoped"
+        ]
+
+        # Output fields in canonical order
+        for key in field_order:
+            if key in metadata and metadata[key] is not None:
+                value = metadata[key]
                 if isinstance(value, date):
                     lines.append(f"{key}: {value.isoformat()}")
                 else:
                     lines.append(f"{key}: {value}")
+
+        # Add any remaining fields not in canonical order (shouldn't happen normally)
+        for key, value in metadata.items():
+            if key not in field_order and value is not None:
+                if isinstance(value, date):
+                    lines.append(f"{key}: {value.isoformat()}")
+                else:
+                    lines.append(f"{key}: {value}")
+
         lines.append("---")
-        lines.append("")
         lines.append(content)
         return '\n'.join(lines)
 
@@ -188,16 +208,30 @@ class FileSync:
                             # DB is newer → update file
                             print(f"  DB → File: {project_file.relative_to(self.source_path)}")
                             if not self.dry_run:
+                                # Convert enums to clean strings
+                                type_str = str(db_project.type)
+                                if "." in type_str:
+                                    type_str = type_str.split(".")[-1].lower()
+
+                                # Only include file-native YAML fields (no DB-internal fields)
                                 new_metadata = {
                                     "title": db_project.title,
-                                    "slug": db_project.slug,
                                     "area": db_project.area,
-                                    "folder": db_project.folder,
-                                    "type": db_project.type,
+                                    "type": type_str,
                                     "created": db_project.created,
-                                    "due": db_project.due,
-                                    "last_reviewed": db_project.last_reviewed,
                                 }
+                                # Add optional date fields only if they exist
+                                if db_project.last_reviewed:
+                                    new_metadata["last_reviewed"] = db_project.last_reviewed
+                                if db_project.due:
+                                    new_metadata["due"] = db_project.due
+                                if db_project.started:
+                                    new_metadata["started"] = db_project.started
+                                if db_project.completed:
+                                    new_metadata["completed"] = db_project.completed
+                                if db_project.descoped:
+                                    new_metadata["descoped"] = db_project.descoped
+
                                 new_content = self.create_yaml_frontmatter(
                                     new_metadata,
                                     db_project.content,
@@ -235,7 +269,10 @@ class FileSync:
         for slug, db_project in db_projects_by_slug.items():
             if slug not in seen_slugs and not db_project.deleted:
                 # DB project without file → create file
-                folder = db_project.folder
+                folder = str(db_project.folder)
+                # Handle enum representation (e.g., "ProjectFolder.ACTIVE" -> "active")
+                if "." in folder:
+                    folder = folder.split(".")[-1].lower()
                 folder_path = self.source_path / "10k-projects" / folder
                 folder_path.mkdir(parents=True, exist_ok=True)
 
@@ -245,16 +282,30 @@ class FileSync:
 
                 print(f"  Create file: 10k-projects/{folder}/{filename}")
                 if not self.dry_run:
+                    # Convert enums to clean strings
+                    type_str = str(db_project.type)
+                    if "." in type_str:
+                        type_str = type_str.split(".")[-1].lower()
+
+                    # Only include file-native YAML fields
                     metadata = {
                         "title": db_project.title,
-                        "slug": db_project.slug,
                         "area": db_project.area,
-                        "folder": db_project.folder,
-                        "type": db_project.type,
+                        "type": type_str,
                         "created": db_project.created,
-                        "due": db_project.due,
-                        "last_reviewed": db_project.last_reviewed,
                     }
+                    # Add optional date fields only if they exist
+                    if db_project.last_reviewed:
+                        metadata["last_reviewed"] = db_project.last_reviewed
+                    if db_project.due:
+                        metadata["due"] = db_project.due
+                    if db_project.started:
+                        metadata["started"] = db_project.started
+                    if db_project.completed:
+                        metadata["completed"] = db_project.completed
+                    if db_project.descoped:
+                        metadata["descoped"] = db_project.descoped
+
                     content = self.create_yaml_frontmatter(metadata, db_project.content)
                     file_path.write_text(content)
                 self.stats["created_as_file"] += 1
@@ -307,12 +358,17 @@ class FileSync:
                         elif file_mtime < db_mtime:
                             print(f"  DB → File: {goal_file.relative_to(self.source_path)}")
                             if not self.dry_run:
+                                # Only include file-native YAML fields (no DB-internal fields)
                                 new_metadata = {
                                     "title": db_goal.title,
-                                    "slug": db_goal.slug,
                                     "area": db_goal.area,
-                                    "folder": db_goal.folder,
                                 }
+                                # Add optional date fields only if they exist
+                                if db_goal.last_reviewed:
+                                    new_metadata["last_reviewed"] = db_goal.last_reviewed
+                                if db_goal.created:
+                                    new_metadata["created"] = db_goal.created
+
                                 new_content = self.create_yaml_frontmatter(
                                     new_metadata,
                                     db_goal.content,
@@ -344,7 +400,10 @@ class FileSync:
         # Create files for DB goals without files
         for slug, db_goal in db_goals_by_slug.items():
             if slug not in seen_slugs and not db_goal.deleted:
-                folder = db_goal.folder
+                folder = str(db_goal.folder)
+                # Handle enum representation (e.g., "ProjectFolder.ACTIVE" -> "active")
+                if "." in folder:
+                    folder = folder.split(".")[-1].lower()
                 folder_path = self.source_path / "30k-goals" / folder
                 folder_path.mkdir(parents=True, exist_ok=True)
 
@@ -353,12 +412,17 @@ class FileSync:
 
                 print(f"  Create file: 30k-goals/{folder}/{filename}")
                 if not self.dry_run:
+                    # Only include file-native YAML fields
                     metadata = {
                         "title": db_goal.title,
-                        "slug": db_goal.slug,
                         "area": db_goal.area,
-                        "folder": db_goal.folder,
                     }
+                    # Add optional date fields only if they exist
+                    if db_goal.last_reviewed:
+                        metadata["last_reviewed"] = db_goal.last_reviewed
+                    if db_goal.created:
+                        metadata["created"] = db_goal.created
+
                     content = self.create_yaml_frontmatter(metadata, db_goal.content)
                     file_path.write_text(content)
                 self.stats["created_as_file"] += 1

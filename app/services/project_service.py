@@ -78,7 +78,7 @@ class ProjectService:
             "folder": project_create.folder.value if project_create.folder else ProjectFolder.ACTIVE.value,
             "type": project_create.type.value if project_create.type else ProjectType.STANDARD.value,
             "content": project_create.content if project_create.content else "",
-            "created": datetime.combine(today, datetime.min.time()),
+            "created": datetime.combine(project_create.created, datetime.min.time()) if project_create.created else datetime.combine(today, datetime.min.time()),
             "deleted": False,
             "created_at": now,
             "updated_at": now,
@@ -87,6 +87,14 @@ class ProjectService:
         # Add optional fields (convert dates to datetime)
         if project_create.due:
             project_doc["due"] = datetime.combine(project_create.due, datetime.min.time())
+        if project_create.started:
+            project_doc["started"] = datetime.combine(project_create.started, datetime.min.time())
+        if project_create.last_reviewed:
+            project_doc["last_reviewed"] = datetime.combine(project_create.last_reviewed, datetime.min.time())
+        if project_create.completed:
+            project_doc["completed"] = datetime.combine(project_create.completed, datetime.min.time())
+        if project_create.descoped:
+            project_doc["descoped"] = datetime.combine(project_create.descoped, datetime.min.time())
 
         # Insert into database
         result = await self.projects.insert_one(project_doc)
