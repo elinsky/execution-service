@@ -16,7 +16,7 @@ import hashlib
 import sys
 from pathlib import Path
 from typing import Optional
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 import re
 
 # Add parent directory to path for imports
@@ -170,8 +170,8 @@ class FileSync:
 
             for project_file in folder_path.rglob("*.md"):
                 try:
-                    # Get file metadata
-                    file_mtime = datetime.fromtimestamp(project_file.stat().st_mtime)
+                    # Get file metadata - convert to UTC for comparison with DB timestamps
+                    file_mtime = datetime.fromtimestamp(project_file.stat().st_mtime, tz=timezone.utc).replace(tzinfo=None)
                     content = project_file.read_text()
                     metadata, markdown = self.parse_yaml_frontmatter(content)
 
@@ -330,7 +330,8 @@ class FileSync:
 
             for goal_file in folder_path.glob("*.md"):
                 try:
-                    file_mtime = datetime.fromtimestamp(goal_file.stat().st_mtime)
+                    # Get file metadata - convert to UTC for comparison with DB timestamps
+                    file_mtime = datetime.fromtimestamp(goal_file.stat().st_mtime, tz=timezone.utc).replace(tzinfo=None)
                     content = goal_file.read_text()
                     metadata, markdown = self.parse_yaml_frontmatter(content)
 
