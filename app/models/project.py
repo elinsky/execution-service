@@ -55,7 +55,7 @@ class ProjectUpdate(BaseModel):
 class Project(ProjectBase):
     """Full project model with database fields."""
 
-    id: str = Field(alias="_id")
+    id: str = Field(alias="_id", serialization_alias="id")
     user_id: str
     slug: str
     created: date

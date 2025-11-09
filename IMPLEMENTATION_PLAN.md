@@ -1,6 +1,6 @@
 # Execution Service Implementation Plan
 
-**Status:** Phase 3 - Authentication
+**Status:** Phase 4 Complete - Projects CRUD
 **Start Date:** 2025-11-09
 **Last Updated:** 2025-11-09
 **Tech Stack:** FastAPI, MongoDB Atlas, Python 3.11+, pytest (TDD)
@@ -349,9 +349,9 @@ class Project(ProjectBase):
    ```
 
 **Tasks:**
-- [ ] Write auth service tests
-- [ ] Implement AuthService
-- [ ] All service tests pass
+- [x] Write auth service tests
+- [x] Implement AuthService
+- [x] All service tests pass
 
 ---
 
@@ -407,11 +407,11 @@ class Project(ProjectBase):
    ```
 
 **Tasks:**
-- [ ] Write auth endpoint tests
-- [ ] Implement auth router
-- [ ] Wire up in main.py
-- [ ] All integration tests pass
-- [ ] Manual test with curl/httpx
+- [x] Write auth endpoint tests
+- [x] Implement auth router
+- [x] Wire up in main.py
+- [x] All integration tests pass
+- [x] Manual test with curl/httpx
 
 **Manual Test:**
 ```bash
@@ -509,15 +509,15 @@ curl http://localhost:8000/auth/me \
    ```
 
 **Tasks:**
-- [ ] Write all project service tests
-- [ ] Implement ProjectService.create_project
-- [ ] Implement ProjectService.list_projects
-- [ ] Implement ProjectService.get_project
-- [ ] Implement ProjectService.update_project
-- [ ] Implement ProjectService.delete_project
-- [ ] Implement ProjectService.complete_project
-- [ ] Implement ProjectService.activate_project
-- [ ] All service tests pass
+- [x] Write all project service tests
+- [x] Implement ProjectService.create_project
+- [x] Implement ProjectService.list_projects
+- [x] Implement ProjectService.get_project
+- [x] Implement ProjectService.update_project
+- [x] Implement ProjectService.delete_project
+- [ ] Implement ProjectService.complete_project (not yet needed)
+- [ ] Implement ProjectService.activate_project (not yet needed)
+- [x] All service tests pass
 
 ---
 
@@ -582,11 +582,11 @@ curl http://localhost:8000/auth/me \
    ```
 
 **Tasks:**
-- [ ] Write all project endpoint tests
-- [ ] Implement all project endpoints
-- [ ] Wire up in main.py
-- [ ] All integration tests pass
-- [ ] Manual API testing
+- [x] Write all project endpoint tests
+- [x] Implement all project endpoints (GET, POST, PATCH, DELETE)
+- [x] Wire up in main.py
+- [x] All integration tests pass (14 tests)
+- [x] Manual API testing
 
 ---
 
@@ -958,8 +958,8 @@ jobs:
 |-------|------|--------|
 | 1. Setup & Infrastructure | 1 | Complete |
 | 2. Database & Models | 1 | Complete |
-| 3. Authentication | 1 | In Progress |
-| 4. Projects CRUD | 2 | Pending |
+| 3. Authentication | 1 | Complete |
+| 4. Projects CRUD | 2 | Complete |
 | 5. Actions CRUD | 1 | Pending |
 | 6. Time Tracking | 1 | Pending |
 | 7. Goals | 1 | Pending |
@@ -978,12 +978,14 @@ jobs:
 **Completed:**
 - Phase 1: MongoDB Atlas setup and repository scaffolding
 - Phase 2: Database models and utilities (48 tests passing)
+- Phase 3: Authentication (AuthService, auth router, JWT tokens) (66 tests passing)
+- Phase 4: Projects CRUD (ProjectService, project endpoints) (93 tests passing)
 
-**Right now (Phase 3):**
-1. Implement AuthService (business logic)
-2. Write auth endpoint tests
-3. Implement auth router
-4. Wire up in main.py
-5. Manual testing with curl/httpx
+**Next (Phase 5):**
+1. Write ActionService tests
+2. Implement ActionService (create, list, update, complete, delete)
+3. Write action endpoint tests
+4. Implement action router
+5. All tests pass
 
-**Ready to begin Phase 3 - Authentication!**
+**Ready to begin Phase 5 - Actions CRUD!**
