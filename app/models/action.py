@@ -51,7 +51,7 @@ class ActionUpdate(BaseModel):
 class Action(ActionBase):
     """Full action model with database fields."""
 
-    id: str = Field(alias="_id")
+    id: str = Field(alias="_id", serialization_alias="id")
     user_id: str
     action_date: date  # Creation date
     completed: Optional[date] = None

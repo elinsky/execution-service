@@ -1,6 +1,6 @@
 # Execution Service Implementation Plan
 
-**Status:** Phase 4 Complete - Projects CRUD
+**Status:** Phase 5 Complete - Actions CRUD
 **Start Date:** 2025-11-09
 **Last Updated:** 2025-11-09
 **Tech Stack:** FastAPI, MongoDB Atlas, Python 3.11+, pytest (TDD)
@@ -612,16 +612,16 @@ curl http://localhost:8000/auth/me \
 5. All tests pass
 
 **Tasks:**
-- [ ] Write action service tests
-- [ ] Implement ActionService
-- [ ] Write action endpoint tests
-- [ ] Implement action router (`app/routers/actions.py`)
-- [ ] All tests pass
+- [x] Write action service tests (18 tests)
+- [x] Implement ActionService
+- [x] Write action endpoint tests (14 tests)
+- [x] Implement action router (`app/routers/actions.py`)
+- [x] All tests pass (125 tests total)
 
 **Key Validation:**
-- When creating action with `+project`, validate project exists
-- When completing project, check no incomplete actions exist
-- Filter out soft-deleted actions by default
+- [x] When creating action with `project_slug`, validate project exists
+- [ ] When completing project, check no incomplete actions exist (deferred)
+- [x] Filter out soft-deleted actions by default
 
 ---
 
@@ -960,7 +960,7 @@ jobs:
 | 2. Database & Models | 1 | Complete |
 | 3. Authentication | 1 | Complete |
 | 4. Projects CRUD | 2 | Complete |
-| 5. Actions CRUD | 1 | Pending |
+| 5. Actions CRUD | 1 | Complete |
 | 6. Time Tracking | 1 | Pending |
 | 7. Goals | 1 | Pending |
 | 8. File Sync | 1 | Pending |
@@ -980,12 +980,13 @@ jobs:
 - Phase 2: Database models and utilities (48 tests passing)
 - Phase 3: Authentication (AuthService, auth router, JWT tokens) (66 tests passing)
 - Phase 4: Projects CRUD (ProjectService, project endpoints) (93 tests passing)
+- Phase 5: Actions CRUD (ActionService, action endpoints) (125 tests passing)
 
-**Next (Phase 5):**
-1. Write ActionService tests
-2. Implement ActionService (create, list, update, complete, delete)
-3. Write action endpoint tests
-4. Implement action router
+**Next (Phase 6):**
+1. Write TimerService tests
+2. Implement TimerService (start, stop, list entries)
+3. Write timer endpoint tests
+4. Implement timer router
 5. All tests pass
 
-**Ready to begin Phase 5 - Actions CRUD!**
+**Ready to begin Phase 6 - Time Tracking!**
