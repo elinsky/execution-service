@@ -1,5 +1,6 @@
 """Authentication service - business logic for user auth."""
 from datetime import datetime
+from bson import ObjectId
 
 from app.models.user import User, UserInDB
 from app.utils.auth import create_access_token, hash_password, verify_password
@@ -99,7 +100,12 @@ class AuthService:
         Raises:
             ValueError: If user not found
         """
-        user_doc = await self.users.find_one({"_id": user_id})
+        try:
+            object_id = ObjectId(user_id)
+        except Exception:
+            raise ValueError("Invalid user ID format")
+
+        user_doc = await self.users.find_one({"_id": object_id})
         if not user_doc:
             raise ValueError("User not found")
 

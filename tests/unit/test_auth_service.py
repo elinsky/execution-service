@@ -173,13 +173,15 @@ class TestAuthServiceGetUser:
     async def test_get_user_by_id_found(self):
         """Test getting user by ID when user exists."""
         from app.services.auth_service import AuthService
+        from bson import ObjectId
 
         mock_db = MagicMock()
         mock_users = AsyncMock()
         mock_db.__getitem__.return_value = mock_users
 
+        test_id = ObjectId()
         mock_users.find_one.return_value = {
-            "_id": "user123",
+            "_id": test_id,
             "email": "brian@example.com",
             "name": "Brian",
             "hashed_password": "$2b$12$...",
@@ -188,15 +190,16 @@ class TestAuthServiceGetUser:
         }
 
         service = AuthService(mock_db)
-        user = await service.get_user_by_id("user123")
+        user = await service.get_user_by_id(str(test_id))
 
-        assert user.id == "user123"
+        assert user.id == str(test_id)
         assert user.email == "brian@example.com"
         assert user.name == "Brian"
 
     async def test_get_user_by_id_not_found(self):
         """Test getting user by ID when user doesn't exist."""
         from app.services.auth_service import AuthService
+        from bson import ObjectId
 
         mock_db = MagicMock()
         mock_users = AsyncMock()
@@ -206,5 +209,7 @@ class TestAuthServiceGetUser:
 
         service = AuthService(mock_db)
 
+        # Use a valid ObjectId format
+        test_id = str(ObjectId())
         with pytest.raises(ValueError, match="User not found"):
-            await service.get_user_by_id("nonexistent")
+            await service.get_user_by_id(test_id)

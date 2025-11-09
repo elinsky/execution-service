@@ -21,7 +21,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     """User model without password (for API responses)."""
 
-    id: str = Field(alias="_id")
+    id: str = Field(alias="_id", serialization_alias="id")
     created_at: datetime
     updated_at: datetime
 

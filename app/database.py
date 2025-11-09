@@ -23,7 +23,7 @@ class Database:
 
     def get_collection(self, name: str):
         """Get a MongoDB collection."""
-        if not self.db:
+        if self.db is None:
             raise RuntimeError("Database not connected")
         return self.db[name]
 
@@ -34,6 +34,6 @@ database = Database()
 
 async def get_database() -> AsyncIOMotorDatabase:
     """Dependency to get database instance."""
-    if not database.db:
+    if database.db is None:
         raise RuntimeError("Database not connected")
     return database.db
