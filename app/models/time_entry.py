@@ -36,7 +36,7 @@ class TimeEntryUpdate(BaseModel):
 class TimeEntry(TimeEntryBase):
     """Full time entry model with database fields."""
 
-    id: str = Field(alias="_id")
+    id: str = Field(alias="_id", serialization_alias="id")
     user_id: str
     created_at: datetime
     updated_at: datetime
