@@ -1,6 +1,6 @@
 # Execution Service Implementation Plan
 
-**Status:** Phase 2 - Database Models (TDD)
+**Status:** Phase 3 - Authentication
 **Start Date:** 2025-11-09
 **Last Updated:** 2025-11-09
 **Tech Stack:** FastAPI, MongoDB Atlas, Python 3.11+, pytest (TDD)
@@ -246,13 +246,13 @@ class Project(ProjectBase):
 - `app/models/goal.py` (Goal, GoalCreate, GoalUpdate)
 
 **Tasks:**
-- [ ] Write model tests for all entities
-- [ ] Implement User model
-- [ ] Implement Project model
-- [ ] Implement Action model
-- [ ] Implement TimeEntry model
-- [ ] Implement Goal model
-- [ ] All validation tests pass
+- [x] Write model tests for all entities
+- [x] Implement User model
+- [x] Implement Project model
+- [x] Implement Action model
+- [x] Implement TimeEntry model
+- [x] Implement Goal model
+- [x] All validation tests pass
 
 ---
 
@@ -296,11 +296,11 @@ class Project(ProjectBase):
 - `app/utils/validators.py` (Custom validators)
 
 **Tasks:**
-- [ ] Write slug tests
-- [ ] Implement slug.py
-- [ ] Write auth tests (JWT, password)
-- [ ] Implement auth.py
-- [ ] All utils tests pass
+- [x] Write slug tests
+- [x] Implement slug.py
+- [x] Write auth tests (JWT, password)
+- [x] Implement auth.py
+- [x] All utils tests pass
 
 ---
 
@@ -957,8 +957,8 @@ jobs:
 | Phase | Days | Status |
 |-------|------|--------|
 | 1. Setup & Infrastructure | 1 | Complete |
-| 2. Database & Models | 1 | In Progress (2.1 complete) |
-| 3. Authentication | 1 | Pending |
+| 2. Database & Models | 1 | Complete |
+| 3. Authentication | 1 | In Progress |
 | 4. Projects CRUD | 2 | Pending |
 | 5. Actions CRUD | 1 | Pending |
 | 6. Time Tracking | 1 | Pending |
@@ -977,15 +977,13 @@ jobs:
 
 **Completed:**
 - Phase 1: MongoDB Atlas setup and repository scaffolding
-- Phase 2.1: Database connection working
+- Phase 2: Database models and utilities (48 tests passing)
 
-**Right now (Phase 2.2-2.3):**
-1. Write tests for Pydantic models
-2. Implement User model
-3. Implement Project model
-4. Implement Action model
-5. Implement TimeEntry model
-6. Implement Goal model
-7. Implement utility functions (slug, auth helpers)
+**Right now (Phase 3):**
+1. Implement AuthService (business logic)
+2. Write auth endpoint tests
+3. Implement auth router
+4. Wire up in main.py
+5. Manual testing with curl/httpx
 
-**Ready to begin Phase 2.2 - Pydantic Models (TDD)!**
+**Ready to begin Phase 3 - Authentication!**
